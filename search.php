@@ -11,14 +11,12 @@ $per_page = 5;
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $start = ($page - 1) * $per_page;
 
-// Get total number of matching posts
 $stmt = prepare_query($conn, "SELECT COUNT(*) as total FROM posts WHERE title LIKE ? OR content LIKE ?", 
     ["%$query%", "%$query%"]);
 mysqli_stmt_execute($stmt);
 $total = mysqli_fetch_assoc(mysqli_stmt_get_result($stmt))['total'];
 $total_pages = ceil($total / $per_page);
 
-// Fetch matching posts with category info
 $stmt = prepare_query($conn, "SELECT p.*, u.username, c.name as category, c.id as category_id FROM posts p 
     JOIN users u ON p.user_id = u.id 
     JOIN categories c ON p.category_id = c.id 
@@ -27,7 +25,27 @@ $stmt = prepare_query($conn, "SELECT p.*, u.username, c.name as category, c.id a
 mysqli_stmt_execute($stmt);
 $results = mysqli_stmt_get_result($stmt);
 ?>
+<style>
+    .pagination {
+        margin-top: 20px;
+        text-align: center;
+    }
 
+    .pagination a {
+        padding: 8px 12px;
+        margin: 5px;
+        text-decoration: none;
+        border: 1px solid #3498db;
+        color: #3498db;
+        border-radius: 4px;
+        display: inline-block;
+    }
+
+    .pagination a.active {
+        background-color: #3498db;
+        color: white;
+    }
+</style>
 <div class="container">
     <h1>Search Results for "<span style="color: #e74c3c;"><?php echo htmlspecialchars($query); ?></span>"</h1>
     
@@ -36,31 +54,24 @@ $results = mysqli_stmt_get_result($stmt);
             <?php while ($post = mysqli_fetch_assoc($results)): ?>
                 <div class="post" style="border-bottom: 1px solid #ddd; padding: 15px 0">
                     <div style="margin-left: 20px;">
-                          <!-- Clicking Title Redirects to Post -->
-                    <h2>
-                        <a href="post.php?id=<?php echo $post['id']; ?>" 
-                           style="text-decoration: none; color: #3498db;">
-                            <?php echo htmlspecialchars($post['title']); ?>
-                        </a>
-                    </h2>
-
-                    <p><?php echo htmlspecialchars(substr($post['content'], 0, 200)) . '...'; ?></p>
-                    
-                    <div class="meta" style="color: #777; font-size: 14px;">
-                        <span>By <strong><?php echo htmlspecialchars($post['username']); ?></strong></span> | 
-
-                        <!-- Clicking Category Redirects to Category Page -->
-                        <span>
-                            Category: 
-                            <a href="category.php?id=<?php echo $post['category_id']; ?>"
-                               style="font-weight: bold; text-decoration: none; 
-                                      <?php echo (strcasecmp($post['category'], $query) == 0) ? 'color: #e74c3c;' : 'color: #3498db;'; ?>">
-                                <?php echo htmlspecialchars($post['category']); ?>
+                        <h2>
+                            <a href="post.php?id=<?php echo $post['id']; ?>" 
+                               style="text-decoration: none; color: #3498db;">
+                                <?php echo htmlspecialchars($post['title']); ?>
                             </a>
-                        </span> | 
-
-                        <span><?php echo date('M d, Y H:i', strtotime($post['created_at'])); ?></span>
-                    </div>
+                        </h2>
+                        <p><?php echo htmlspecialchars(substr($post['content'], 0, 200)) . '...'; ?></p>
+                        <div class="meta" style="color: #777; font-size: 14px;">
+                            <span>By <strong><?php echo htmlspecialchars($post['username']); ?></strong></span> | 
+                            <span>
+                                Category: 
+                                <a href="category.php?id=<?php echo $post['category_id']; ?>"
+                                   style="font-weight: bold; text-decoration: none; <?php echo (strcasecmp($post['category'], $query) == 0) ? 'color: #e74c3c;' : 'color: #3498db;'; ?>">
+                                    <?php echo htmlspecialchars($post['category']); ?>
+                                </a>
+                            </span> | 
+                            <span><?php echo date('M d, Y H:i', strtotime($post['created_at'])); ?></span>
+                        </div>
                     </div>
                 </div>
             <?php endwhile; ?>
@@ -69,18 +80,15 @@ $results = mysqli_stmt_get_result($stmt);
         <?php endif; ?>
     </div>
 
-    <!-- Pagination -->
     <?php if ($total_pages > 1): ?>
-        <div class="pagination" style="margin-top: 20px; text-align: center;">
+        <div class="pagination">
             <?php for ($i = 1; $i <= $total_pages; $i++): ?>
                 <a href="?q=<?php echo urlencode($query); ?>&page=<?php echo $i; ?>" 
-                   style="padding: 8px 12px; margin: 5px; text-decoration: none; border: 1px solid #3498db; color: #3498db; border-radius: 4px; display: inline-block;
-                          <?php echo $page == $i ? 'background-color: #3498db; color: white;' : ''; ?>">
+                   class="<?php echo $page == $i ? 'active' : ''; ?>">
                     <?php echo $i; ?>
                 </a>
             <?php endfor; ?>
         </div>
     <?php endif; ?>
 </div>
-
 <?php require_once 'includes/footer.php'; ?>

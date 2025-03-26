@@ -53,27 +53,204 @@ $stmt = prepare_query($conn, "SELECT p.*, u.username FROM posts p JOIN users u O
 mysqli_stmt_execute($stmt);
 $posts = mysqli_stmt_get_result($stmt);
 ?>
+<style>
+    h1 {
+        font-size: 32px;
+        color: #2c3e50;
+        margin: 40px 0 20px;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    p {
+        color: #666;
+        font-size: 16px;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .post-form,
+    .comment-form {
+        background: linear-gradient(135deg, #ffffff, #f9f9f9);
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        margin: 30px auto;
+        max-width: 1200px;
+        border: 1px solid #e0e0e0;
+    }
+
+    .post-form textarea,
+    .comment-form textarea {
+        width: 100%;
+        min-height: 120px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin: 15px 0;
+        font-size: 16px;
+        background: #fff;
+        transition: border-color 0.3s ease;
+    }
+
+    .post-form textarea:focus,
+    .comment-form textarea:focus {
+        border-color: #3498db;
+        outline: none;
+        box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+    }
+
+    .post-form input,
+    .comment-form button {
+        width: 100%;
+        padding: 12px;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .post-form button {
+        width: 100%;
+        padding: 12px;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .post-form input {
+        background: #fff;
+        color: #333;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+
+    .post-form button:hover,
+    .comment-form button:hover {
+        background: linear-gradient(135deg, #2980b9, #1e6f9f);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .posts .post {
+        background: linear-gradient(135deg, #ffffff, #f9f9f9);
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        margin-bottom: 30px;
+        border: 1px solid #e0e0e0;
+        transition: all 0.3s ease;
+        width: 900px;
+    }
+
+    .posts .post:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+
+    .posts .post h2 {
+        color: #2c3e50;
+        margin-bottom: 15px;
+        font-size: 24px;
+        font-weight: 600;
+    }
+
+    .posts .meta {
+        color: #777;
+        font-size: 14px;
+        margin-top: 15px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .posts .meta a.like-btn {
+        color: #3498db;
+        text-decoration: none;
+        padding: 6px 12px;
+        border: 1px solid #3498db;
+        border-radius: 25px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .posts .meta a.like-btn:hover {
+        background: #3498db;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .comments .comment {
+        background: #f9f9f9;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 15px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        border-left: 4px solid #3498db;
+    }
+
+    .comments .comment p {
+        margin-bottom: 10px;
+        color: #333;
+        font-size: 15px;
+        text-align: left;
+    }
+
+    .comments .comment span {
+        color: #777;
+        font-size: 13px;
+    }
+
+    .pagination {
+        margin: 50px 0;
+        text-align: center;
+    }
+
+    .pagination a {
+        padding: 10px 16px;
+        margin: 0 8px;
+        text-decoration: none;
+        color: #3498db;
+        border: 1px solid #ddd;
+        border-radius: 25px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .pagination a:hover {
+        background: #3498db;
+        color: white;
+        border-color: #3498db;
+    }
+
+    .pagination a.active {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        border-color: #3498db;
+    }
+</style>
 <div class="container">
     <h1><?php echo htmlspecialchars($category['name']); ?></h1>
     <p><?php echo htmlspecialchars($category['description']); ?></p>
     
     <?php if(isset($_SESSION['user_id'])): ?>
-    <form method="POST" class="post-form" style="max-width: 1200px; margin: 20px auto; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+    <form method="POST" class="post-form">
         <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-        
-        <input type="text" name="title" placeholder="Post Title" required 
-            style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px;">
-        
-        <textarea name="content" placeholder="Your post..." required 
-            style="width: 100%; min-height: 150px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px; margin-bottom: 10px;"></textarea>
-        
-        <button type="submit" name="new_post" 
-            style="width: 100%; padding: 12px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; transition: background 0.3s;">
-            Post
-        </button>
+        <input type="text" name="title" placeholder="Post Title" required>
+        <textarea name="content" placeholder="Your post..." required></textarea>
+        <button type="submit" name="new_post">Post</button>
     </form>
-<?php endif; ?>
-
+    <?php endif; ?>
 
     <div class="posts">
         <?php while($post = mysqli_fetch_assoc($posts)): ?>
@@ -110,20 +287,13 @@ $posts = mysqli_stmt_get_result($stmt);
                     <?php endwhile; ?>
                     
                     <?php if(isset($_SESSION['user_id'])): ?>
-    <form method="POST" class="comment-form" style="max-width: 1200px; margin: 20px auto; padding: 15px; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-        <input type="hidden" name="post_id" value="<?php echo $post['id']; ?>">
-        
-        <textarea name="content" placeholder="Your comment..." required 
-            style="width: 100%; min-height: 100px; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 16px; margin-bottom: 10px;"></textarea>
-        
-        <button type="submit" name="comment" 
-            style="width: 100%; padding: 10px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; transition: background 0.3s;">
-            Comment
-        </button>
-    </form>
-<?php endif; ?>
-
+                    <form method="POST" class="comment-form">
+                        <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                        <input type="hidden" name="post_id" value="<?php echo $post['id']; ?>">
+                        <textarea name="content" placeholder="Your comment..." required></textarea>
+                        <button type="submit" name="comment">Comment</button>
+                    </form>
+                    <?php endif; ?>
                 </div>
             </div>
         <?php endwhile; ?>

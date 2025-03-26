@@ -64,6 +64,121 @@ if(isset($_POST['change_password'])) {
     }
 }
 ?>
+<style>
+    h1 {
+        font-size: 32px;
+        color: #2c3e50;
+        margin: 40px 0 20px;
+        font-weight: 700;
+        text-align: center;
+    }
+
+    .profile-form {
+        max-width: 500px;
+        margin: 30px auto;
+        padding: 30px;
+        background: linear-gradient(135deg, #ffffff, #f9f9f9);
+        border-radius: 12px;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        border: 1px solid #e0e0e0;
+    }
+
+    .profile-form h2 {
+        margin-bottom: 20px;
+        color: #2c3e50;
+        font-size: 24px;
+        font-weight: 600;
+    }
+
+    .profile-form input {
+        width: 100%;
+        padding: 14px;
+        margin: 12px 0;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        background: #fff;
+        transition: all 0.3s ease*.
+    }
+
+    .profile-form input:focus {
+        border-color: #3498db;
+        box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
+        outline: none;
+    }
+
+    .profile-form button {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .profile-form button:hover {
+        background: linear-gradient(135deg, #2980b9, #1e6f9f);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .error {
+        color: #e74c3c;
+        background: #fadbd8;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        text-align: center;
+        border-left: 4px solid #e74c3c;
+    }
+
+    .message {
+        color: #27ae60;
+        background: #d5f5e3;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        text-align: center;
+        border-left: 4px solid #27ae60;
+    }
+
+    .user-activity {
+        margin-top: 40px;
+    }
+
+    .user-activity h3 {
+        color: #2c3e50;
+        font-size: 20px;
+        margin-bottom: 15px;
+        font-weight: 600;
+    }
+
+    .activity-item {
+        background: #f9f9f9;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        border-left: 4px solid #3498db;
+    }
+
+    .activity-item p {
+        color: #333;
+        font-size: 15px;
+        margin-bottom: 5px;
+    }
+
+    .activity-item span {
+        color: #777;
+        font-size: 13px;
+    }
+</style>
 <div class="container">
     <h1>Your Profile</h1>
     
@@ -102,7 +217,6 @@ if(isset($_POST['change_password'])) {
             <button type="submit" name="change_password">Change Password</button>
         </form>
 
-        <h2>Your Activity</h2>
         <div class="user-activity">
             <h3>Your Posts</h3>
             <?php
@@ -135,4 +249,20 @@ if(isset($_POST['change_password'])) {
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const forms = document.querySelectorAll('.profile-form');
+        forms.forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const inputs = this.querySelectorAll('input');
+                inputs.forEach(input => {
+                    if(!input.value.trim()) {
+                        e.preventDefault();
+                        input.style.borderColor = '#e74c3c';
+                    }
+                });
+            });
+        });
+    });
+</script>
 <?php require_once 'includes/footer.php'; ?>
