@@ -1,6 +1,10 @@
 <?php 
+<<<<<<< HEAD
 require_once("includes/config.php");
 
+=======
+require_once('../includes/config.php');
+>>>>>>> 32adb73f0ce782c2f89b34690fb5e17b11960003
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
