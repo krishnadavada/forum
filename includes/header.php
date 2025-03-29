@@ -1,10 +1,6 @@
 <?php 
-<<<<<<< HEAD
 require_once("includes/config.php");
 
-=======
-require_once('../includes/config.php');
->>>>>>> 32adb73f0ce782c2f89b34690fb5e17b11960003
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -202,7 +198,7 @@ if (session_status() == PHP_SESSION_NONE) {
                         <a href="#">Top Categories ▾</a>
                         <ul class="dropdown">
                             <?php
-                            $stmt = prepare_query($conn, "SELECT * FROM categories LIMIT 5");
+                            $stmt = prepare_query($conn, "SELECT * FROM categories");
                             mysqli_stmt_execute($stmt);
                             $result = mysqli_stmt_get_result($stmt);
                             while ($cat = mysqli_fetch_assoc($result)) {
