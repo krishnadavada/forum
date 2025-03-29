@@ -74,7 +74,7 @@ if(isset($_POST['change_password'])) {
     }
 
     .profile-form {
-        max-width: 500px;
+        width: 800px;
         margin: 30px auto;
         padding: 30px;
         background: linear-gradient(135deg, #ffffff, #f9f9f9);

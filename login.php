@@ -93,7 +93,7 @@ require_once 'includes/header.php';
 <style>
     .auth-container {
         max-width: 450px;
-        width:400;
+        width: 400px; /* Fixed the syntax from width:400 */
         margin: 60px auto;
         padding: 35px;
         background: linear-gradient(135deg, #ffffff, #f9f9f9);
@@ -118,11 +118,12 @@ require_once 'includes/header.php';
         border-radius: 8px;
         font-size: 16px;
         background: #fff;
-        transition: all 0.3s ease;
+        box-sizing: border-box; /* Added to prevent size changes */
+        transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Limited transition properties */
     }
 
     .auth-container input:focus {
-        border-color: #3498db;
+        border: 1px solid #3498db; /* Consistent border width */
         box-shadow: 0 0 5px rgba(52, 152, 219, 0.3);
         outline: none;
     }
@@ -246,7 +247,7 @@ require_once 'includes/header.php';
             <input type="password" name="password" id="password" placeholder="Password" required>
             <p class="error-message" id="password-error"></p>
             <div class="options">
-                <label><input type="checkbox" name="remember"> Remember Me</label>
+                &nbsp;
                 <a onclick="toggleForms()">Forgot Password?</a>
             </div>
             <button type="submit" name="login">Login</button>
