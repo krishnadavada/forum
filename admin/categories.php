@@ -30,6 +30,7 @@ if (isset($_POST['add_category'])) {
 
         .container {
             max-width: 1200px;
+            width:1000px;
             margin: 0 auto;
             padding: 20px;
         }

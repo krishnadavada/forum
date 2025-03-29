@@ -41,6 +41,7 @@ $users = mysqli_stmt_get_result($stmt);
 
         .container {
             max-width: 1200px;
+            width: 1000px;
             margin: 0 auto;
             padding: 20px;
         }
